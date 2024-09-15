@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr">
+  <head>
+    <!-- Meta veriler -->
+    <meta charset="utf-8" />
+    <meta name="author" content="Jacob Strieb" />
+    <meta
+      name="description"
+      content="Bağlantıları tarayıcıda AES ile şifreleyerek koruyun."
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+
+    <title>Link Lock - Bağlantıları Şifreyle Koruma</title>
+
+    <!-- Stil -->
+    <link rel="stylesheet" href="../style.css" type="text/css" />
+
+    <!-- Scriptler -->
+    <script type="text/javascript" src="../b64.js"></script>
+    <script type="text/javascript" src="../api.js"></script>
+    <script type="text/javascript">
+      function error(text) {
+        document.querySelector(".error").style.display = "inherit";
+        document.querySelector("#errortext").innerText = `Hata: ${text}`;
+      }
+
+      // <body> yüklendiğinde çalıştır
+      function main() {
+        // b64 kütüphanesi veya API yüklenmediyse hata ver
+        if (!("b64" in window)) {
+          error("Base64 kütüphanesi yüklenmedi.");
+          return;
+        }
+        if (!("apiVersions" in window)) {
+          error("API kütüphanesi yüklenmedi.");
+          return;
+        }
+      }
+    </script>
+    <script type="text/javascript" src="create.js"></script>
+  </head>
+
+  <body onload="main()">
+    <!-- JavaScript devre dışı olanlar için açıklama -->
+    <noscript>
+      <div style="border: 3px solid red; padding: 2em">
+        <p>
+          Eğer bunu görüyorsanız, JavaScript'iniz devre dışı. Bu nedenle, uygulama
+          düzgün çalışmayacaktır. Örneğin, hiçbir buton çalışmayacak.
+        </p>
+
+        <p>
+          Bu uygulama tamamen JavaScript ile programlanmıştır. Bu, tüm şifreleme ve
+          şifre çözmenin istemci tarafında gerçekleşmesi için yapılmıştır. Bu, kodun
+          dağıtılmış bir uygulama olarak çalıştığı anlamına gelir ve yalnızca GitHub
+          Pages'e altyapı olarak güvenmektedir. Ayrıca, kilitli bağlantılar hakkında
+          hiçbir verinin bir sunucuda saklanmadığı anlamına gelir. Kod, kullanıcıların
+          arka planda neler olduğunu inceleyebilmesi için denetlenebilir şekilde
+          tasarlanmıştır.
+        </p>
+
+        <p>
+          Eğer uygulamayı çalıştırmak istiyorsanız, lütfen
+          <a href="https://github.com/aminulislamontor/link-lock"
+            >GitHub'daki kaynak kodunu klonlayın</a
+          >. Böylece yalnızca yerel makinenizde güvenilir dosyalar için JavaScript'i
+          devre dışı bırakabilirsiniz.
+        </p>
+      </div>
+    </noscript>
+
+    <!-- Hataları büyük kırmızı kutuda göster -->
+    <div class="error red-border" style="display: none">
+      <p id="errortext">Hata</p>
+      <button onclick="main()">Tekrar dene</button>
+    </div>
+    <div class="form-cont">
+      <!-- Ana form -->
+      <div class="form">
+        <div class="labeled-input">
+          <label for="url">gizli bağlantı</label>
+          <input
+            type="url"
+            id="url"
+            placeholder="https://"
+            oninvalid="if (!this.validity.customError) this.setCustomValidity('Lütfen geçerli bir URL girin. Başında \'http://\' veya \'https://\' olduğundan emin olun.')"
+            oninput="this.setCustomValidity('')"
+            required
+          />
+        </div>
+        <div class="labeled-input hint">
+          <label for="url">ipucu (isteğe bağlı)</label>
+          <textarea id="hint" rows="1"></textarea>
+        </div>
+        <div class="split-row">
+          <div class="labeled-input password">
+            <label for="password">şifre</label>
+            <input type="password" id="password" />
+          </div>
+          <div class="labeled-input confirm-password">
+            <label for="confirm-password">şifreyi onayla</label>
+            <input
+              type="password"
+              id="confirm-password"
+              oninput="this.setCustomValidity('')"
+            />
+          </div>
+        </div>
+
+        <!-- Gelişmiş seçenekler (JavaScript ile etkinleştirilen açılır menü) -->
+        <details>
+          <summary id="advanced-label">gelişmiş</summary>
+          <div class="advanced" id="advanced">
+            <div class="labeled-input">
+              <label for="iv">rastgele başlatma vektörü</label>
+              <input
+                type="checkbox"
+                id="iv"
+                onclick="onIvCheck(this)"
+                checked
+              />
+            </div>
+            <div class="labeled-input">
+              <label for="salt">rastgele tuz</label>
+              <input type="checkbox" id="salt" checked />
+            </div>
+          </div>
+        </details>
+        <button id="encrypt" onclick="onEncrypt()">Şifrele</button>
+      </div>
+
+      <!-- Çıktı alanı -->
+      <div class="form">
+        <label for="output">çıktı</label>
+        <input type="text" id="output" readonly />
+        <button id="copy" onclick="onCopy('output')">Kopyala</button>
+        <a href="../hidden" id="bookmark" target="_blank"></a>
+        <a href="" id="open" target="_blank"
+          ><button>Yeni Sekmede Aç</button></a
+        >
+        <!-- TinyURL'nin çalışması için özel işlem -->
+        <form
+          action="https://tinyurl.com/create.php"
+          method="get"
+          target="_blank"
+          style="display: inline"
+        >
+          <input type="hidden" id="source" name="source" value="indexpage" />
+          <input type="hidden" id="tinyurl" name="url" value="" />
+          <button>Kısa Bağlantı Al</button>
+        </form>
+        <p class="alert">Kopyalandı</p>
+      </div>
+    </div>
+
+    <!-- Sayfa alt bilgisi -->
+    <footer class="logo">
+      <p class="copyright">
+        <a href="https://github.com/aminulislamontor"><img class="love-svg" src="/made-with-love.svg" alt="Sevgi"/></a>
+      </p>
+    </footer>
+  </body>
+</html>

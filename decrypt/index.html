@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr">
+
+<head>
+  <!-- Meta veriler -->
+  <meta charset="utf-8" />
+  <meta name="author" content="Jacob Strieb" />
+  <meta name="description" content="Bağlantıları tarayıcıda AES ile şifre koruma." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+
+  <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+
+  <title>Şifreli Bağlantı URL'lerini Çöz</title>
+
+  <!-- Stil -->
+  <link rel="stylesheet" href="../style.css" type="text/css" />
+
+  <!-- Scriptler -->
+  <script type="text/javascript" src="../b64.js"></script>
+  <script type="text/javascript" src="../api.js"></script>
+  <script type="text/javascript" src="decrypt.js"> </script>
+</head>
+
+<body onload="main()">
+
+  <!-- JavaScript devre dışı olanlar için açıklama -->
+  <noscript>
+  <div class="red-border">
+    <p>Eğer bunu görüyorsanız, JavaScript'iniz devre dışı. Lütfen kilitli bağlantıya erişmek için JavaScript'i etkinleştirin.</p>
+
+    <p>Bu uygulama tamamen JavaScript ile programlanmıştır. Bu, tüm şifreleme ve şifre çözmenin istemci tarafında gerçekleşmesi için kasıtlı olarak yapılmıştır. Bu, kodun dağıtılmış bir uygulama olarak çalıştığı anlamına gelir ve yalnızca GitHub Pages altyapısını kullanır. Ayrıca, kilitli bağlantılar hakkında hiçbir verinin bir sunucuda saklanmadığı anlamına gelir. Kod, kullanıcıların arka planda neler olduğunu inceleyebilmesi için denetlenebilir şekilde tasarlanmıştır.</p>
+
+    <p>Yine de uygulamayı çalıştırmak istiyorsanız, <a href="https://github.com/aminulislamontor/link-lock">GitHub'daki kaynak kodunu klonlamanızı</a> öneririm. Böylece yalnızca yerel makinenizde güvenilir dosyalar için JavaScript'i devre dışı bırakabilirsiniz.</p>
+  </div>
+  </noscript>
+
+  <!-- Hataları büyük kırmızı kutuda göster -->
+  <div class="error red-border" style="display: none">
+    <p id="errortext">Hata</p>
+    <button onclick="main()">Tekrar dene</button>
+    <a href="https://rcm-developer.github.io/"><button>Bir bağlantıyı kilitle</button></a>
+  </div>
+
+  <div class="form">
+    <label for="encrypted-url">şifreli url</label>
+    <input type="url" id="encrypted-url" oninput="document.querySelector('.alert').style.opacity = 0" />
+    <label for="password">şifre</label>
+    <input type="password" id="password" />
+    <button onclick="onDecrypt()">Şifreyi Çöz</button>
+    <p class="alert">GÖRÜNMÜYOR</p>
+  </div>
+
+  <hr />
+
+  <!-- Çıktı alanı -->
+  <div class="output">
+    <label for="output">çıktı</label>
+    <input type="text" id="output" readonly/>
+    <button id="copy" onclick="onCopy('output')">Kopyala</button>
+    <a href="" id="open" target="_blank"><button>Yeni Sekmede Aç</button></a>
+    <p class="alert" id="copy-alert">Kopyalandı</p>
+  </div>
+
+  <!-- Sayfa alt bilgisi -->
+  <footer class="logo">
+    <p class="copyright">
+      <a href="https://github.com/aminulislamontor"><img src="/made-with-love.svg" alt="Sevgi" /></a>
+    </p>
+  </footer>
+</body>
+</html>

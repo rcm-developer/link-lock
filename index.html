@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr">
+
+<head>
+  <!-- Meta veriler -->
+  <meta charset="utf-8" />
+  <meta name="author" content="Jacob Strieb" />
+  <meta name="description" content="Bağlantıları tarayıcıda AES ile şifreleyerek koruyun." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+  <title>Link Lock - Bağlantıları şifreyle koru</title>
+
+  <!-- Stil -->
+  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  <!-- Scriptler -->
+  <script type="text/javascript" src="b64.js"></script>
+  <script type="text/javascript" src="api.js"></script>
+  <script type="text/javascript" src="index.js"> </script>
+</head>
+
+<body onload="main()">
+  <!-- JavaScript etkin olmayanlar için açıklama -->
+  <noscript>
+  <div class="red-border">
+    <p>Eğer bunu görüyorsanız, JavaScript'iniz devre dışı. Lütfen kilitli bağlantıya erişmek için JavaScript'i etkinleştirin.</p>
+
+    <p>Bu uygulama tamamen JavaScript ile programlanmıştır. Bu, tüm şifreleme ve şifre çözmenin istemci tarafında gerçekleşmesi için kasıtlı olarak yapılmıştır. Bu, kodun dağıtılmış bir uygulama olarak çalıştığı ve yalnızca GitHub Pages'in altyapısına güvendiği anlamına gelir. Ayrıca, kilitli bağlantılar hakkında hiçbir verinin bir sunucuda saklanmadığı anlamına gelir. Kod, kullanıcıların arka planda neler olduğunu inceleyebilmesi için denetlenebilir şekilde tasarlanmıştır.</p>
+
+    <p>Yine de uygulamayı çalıştırmak istiyorsanız, <a href="https://github.com/aminulislamontor/link-lock">GitHub'daki kaynak kodunu klonlamanızı</a> öneririm. Böylece yalnızca yerel makinenizde güvenilir dosyalar için JavaScript'i devre dışı bırakabilirsiniz.</p>
+  </div>
+  </noscript>
+
+  <div class="form" style="display: none">
+    <p>Lütfen bağlantıyı açmak için şifreyi girin.</p>
+    <p id="hint"></p>
+
+    <hr />
+
+    <label for="password">şifre</label>
+    <input type="password" id="password" autofocus />
+    <button id="unlockbutton">Bağlantıyı aç</button>
+  </div>
+
+  <!-- Hataları büyük kırmızı kutuda göster -->
+  <div class="error red-border" style="display: none">
+    <p id="errortext">Hata</p>
+    <button onclick="main()">Tekrar dene</button>
+    <a href="https://rcm-developer.github.io/"><button>Bir bağlantıyı kilitle</button></a>
+    <a href="https://rcm-developer.github.io/decrypt/" id="no-redirect" target="_blank"><button>Yeniden yönlendirmeden şifre çöz</button></a>
+    <!-- <a href="https://rcm-developer.github.io/hidden/" id="hidden" target="_blank"><button>Gizli yer imi oluştur</button></a> -->
+  </div>
+</body>
+
+</html>
